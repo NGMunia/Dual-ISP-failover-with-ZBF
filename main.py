@@ -10,30 +10,30 @@ from csv import writer
 import json
 
 
-# '''
-# Verifying IPSLA on the Firewall
-# '''
-# router = Routers['ZBF']
-# c = ConnectHandler(**router)
-# c.enable()
-# result = c.send_command('show ip sla statistics').splitlines()
-# rp(json.dumps(result, indent=2))
+'''
+Verifying IPSLA on the Firewall
+'''
+router = Routers['ZBF']
+c = ConnectHandler(**router)
+c.enable()
+result = c.send_command('show ip sla statistics').splitlines()
+rp(json.dumps(result, indent=2))
 
 
-# '''
-# Backing up running-configuration
-# '''
-# filepath = input('filepath: ')
-# for devices in Routers.values():
-#     c = ConnectHandler(**devices)
-#     c.enable()
-#     hostname = c.send_command('show version',use_textfsm=True)[0]['hostname']
+'''
+Backing up running-configuration
+'''
+filepath = input('filepath: ')
+for devices in Routers.values():
+    c = ConnectHandler(**devices)
+    c.enable()
+    hostname = c.send_command('show version',use_textfsm=True)[0]['hostname']
 
-#     output = c.send_command('show run')
-#     with open(f'{filepath}/{hostname}','w') as f:
-#         f.write(output)
-#         c.disconnect()
-#     rp(f'[cyan] Finished backing up running configs for {hostname}')
+    output = c.send_command('show run')
+    with open(f'{filepath}/{hostname}','w') as f:
+        f.write(output)
+        c.disconnect()
+    rp(f'[cyan] Finished backing up running configs for {hostname}')
 
 
 '''
