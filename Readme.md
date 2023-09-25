@@ -3,7 +3,7 @@ DUAL-ISP FAILOVER WITH ZBF
 This lab demostrates dual ISP failover facilitated by IPSLA with object tracking.
 This aids in dynamically adding a backup floating static route when the primary path to the internet fails.
 
-Zone based filewall facilitates stateful inspection of traffic leaving the LAN towards the internet, by using 
+Zone based firewall facilitates stateful inspection of traffic leaving the LAN towards the internet, by using 
 the concept of Security zones.
 
 Traffic leaving and entering the network is captured (via Inspect device), which may act as an IDS; this is by
