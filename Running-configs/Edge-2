@@ -1,0 +1,217 @@
+Building configuration...
+
+Current configuration : 2733 bytes
+!
+! Last configuration change at 14:10:28 UTC Mon Sep 25 2023
+!
+version 15.5
+service timestamps debug datetime localtime year
+service timestamps log datetime localtime year
+no service password-encryption
+!
+hostname Edge-2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$8O0z$nHIKTiEN9ez5M89x87h9A1
+!
+aaa new-model
+!
+!
+aaa authentication login default local enable
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+clock timezone UTC 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name gns3.com
+ip name-server 8.8.8.8
+ip name-server 8.8.4.4
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+username Automation secret 8 $8$UkK1PTsqPPP6eH$hMJjaoNfAvMaNqejuzy9L52DHdXgGUn8Aq2rDAKt0JI
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ description Link to Firewall
+ bandwidth 1000000
+ ip address 10.1.70.3 255.255.255.248
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf priority 0
+ ip ospf 1 area 1
+!
+interface Ethernet0/1
+ ip address 44.67.28.2 255.255.255.0
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+interface Ethernet1/0
+ no ip address
+ shutdown
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+interface Serial2/0
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/1
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/2
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial2/3
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial3/0
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial3/1
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial3/2
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+interface Serial3/3
+ no ip address
+ shutdown
+ serial restart-delay 0
+!
+router ospf 1
+ router-id 4.4.4.4
+ auto-cost reference-bandwidth 100000
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list nat_acl interface Ethernet0/1 overload
+ip route 0.0.0.0 0.0.0.0 Ethernet0/1 44.67.28.1
+!
+ip access-list standard nat_acl
+ permit 10.1.64.0 0.0.7.255
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ transport input ssh
+!
+ntp update-calendar
+ntp server ke.pool.ntp.org
+!
+end

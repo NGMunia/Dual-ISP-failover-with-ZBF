@@ -1,0 +1,183 @@
+Building configuration...
+
+Current configuration : 2546 bytes
+!
+! Last configuration change at 14:03:26 UTC Mon Sep 25 2023
+!
+version 15.5
+service timestamps debug datetime localtime year
+service timestamps log datetime localtime year
+no service password-encryption
+!
+hostname ZBF
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$hctx$uMGAdNVEhZbB0n2C.eVxM0
+!
+aaa new-model
+!
+!
+aaa authentication login default local enable
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+clock timezone UTC 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name gns3.com
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+username Automation secret 8 $8$xVtaegOMQX/7v1$1v.TnjWCDaZ/HPimDwQRiVm/7Y2Mjz4cKh2RQ9Fw9kY
+!
+redundancy
+!
+!
+track 1 ip sla 1 reachability
+ delay down 10 up 10
+!
+ip tcp synwait-time 5
+ip ssh version 2
+!
+class-map type inspect match-any Private-Internet-class
+ match protocol tcp
+ match protocol udp
+ match protocol icmp
+ match protocol ntp
+!
+policy-map type inspect Private-Internet-policy
+ class type inspect Private-Internet-class
+  inspect 
+ class class-default
+  drop
+!
+zone security Private
+zone security Internet
+zone-pair security Private-Internet-zone source Private destination Internet
+ service-policy type inspect Private-Internet-policy
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ description Link to R1
+ bandwidth 1000000
+ ip address 10.1.69.2 255.255.255.252
+ zone-member security Private
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+!
+interface Ethernet0/1
+ description Link to Edge routers
+ bandwidth 1000000
+ ip address 10.1.70.1 255.255.255.248
+ zone-member security Internet
+ ip ospf priority 100
+ ip ospf 1 area 1
+!
+interface Ethernet0/2
+ no ip address
+ shutdown
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 2.2.2.2
+ auto-cost reference-bandwidth 100000
+ default-information originate
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 10.1.70.2 track 1
+ip route 0.0.0.0 0.0.0.0 10.1.70.3 10
+!
+ip sla 1
+ icmp-echo 8.8.8.8 source-ip 10.1.69.2
+ frequency 10
+ip sla schedule 1 life forever start-time now
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ transport input ssh
+!
+ntp server 10.1.70.2 prefer
+ntp server 10.1.70.3
+!
+end

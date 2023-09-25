@@ -1,0 +1,182 @@
+Building configuration...
+
+Current configuration : 2476 bytes
+!
+! Last configuration change at 14:00:22 UTC Mon Sep 25 2023
+!
+version 15.5
+service timestamps debug datetime localtime year
+service timestamps log datetime localtime year
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$m/ez$JWOPk70ieWOvrRWZJvGF5.
+!
+aaa new-model
+!
+!
+aaa authentication login default local enable
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+clock timezone UTC 3 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip flow-cache timeout active 1
+no ip domain lookup
+ip domain name gns3.com
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+username Automation secret 8 $8$BrCcSn1ReB3ERn$VOnQ6VY2kk9B3IRH83H.Zt3PdKzcWbt6acqL01XOJr.
+!
+redundancy
+!
+!
+ip tcp synwait-time 5
+ip ssh version 2
+!
+class-map match-any Social-Media-class
+ match protocol facebook
+ match protocol instagram
+ match protocol twitter
+class-map match-any Scavenger-class
+ match protocol bittorrent
+ match protocol netflix
+!
+policy-map Internet-policy
+ class Scavenger-class
+  drop
+ class Social-Media-class
+  set dscp af13
+  police 256000 conform-action transmit  exceed-action drop 
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Ethernet0/0
+ description LAN subnet
+ ip address 10.1.68.1 255.255.255.0
+ ip helper-address 10.1.67.254
+ ip nbar protocol-discovery
+ ip flow ingress
+ ip flow egress
+ ip ospf 1 area 0
+!
+interface Ethernet0/1
+ description Link to Firewall
+ ip address 10.1.69.1 255.255.255.252
+ ip ospf network point-to-point
+ ip ospf 1 area 0
+ service-policy output Internet-policy
+!
+interface Ethernet0/2
+ description Link to Server
+ ip address 10.1.67.1 255.255.255.0
+ ip ospf 1 area 0
+!
+interface Ethernet0/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ auto-cost reference-bandwidth 100000
+ passive-interface Ethernet0/0
+ passive-interface Ethernet0/2
+!
+ip forward-protocol nd
+!
+ip flow-export version 9
+ip flow-export destination 10.1.67.254 9996
+ip flow-top-talkers
+ top 5
+ sort-by bytes
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ transport input ssh
+!
+ntp update-calendar
+ntp server 10.1.70.2 prefer
+ntp server 10.1.70.3
+!
+end
