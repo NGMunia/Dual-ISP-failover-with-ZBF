@@ -12,6 +12,7 @@ sending all traffic to the device (SPAN) to be scanned and/or analyzed.
 QoS has also been deployed to rate-limit/drop traffic classified as "Scavenger" and "social-media"
 
 The server acts a DHCP server for clients in 10.1.68.0/24 prefix
+It also Offers centralized services like Network monitoring (using PRTG server)
 
 Automation is used for information gathering and inventory purposes.
 
