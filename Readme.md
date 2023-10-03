@@ -9,6 +9,8 @@ the concept of Security zones.
 Traffic leaving and entering the network is captured (via Inspect device), which may act as an IDS; this is by
 sending all traffic to the device (SPAN) to be scanned and/or analyzed.
 
+QoS has also been deployed to rate-limit/drop traffic classified as "Scavenger" and "social-media"
+
 The server acts a DHCP server for clients in 10.1.68.0/24 prefix
 
 Automation is used for information gathering and inventory purposes.
